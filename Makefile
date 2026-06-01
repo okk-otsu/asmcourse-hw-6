@@ -1,22 +1,56 @@
-CFLAGS ?= -O2 -g
+CC = gcc
+ASM = nasm
 
-CFLAGS += -std=gnu99
-
-CFLAGS += -Wall -Werror -Wformat-security -Wignored-qualifiers -Winit-self \
-	-Wswitch-default -Wpointer-arith -Wtype-limits -Wempty-body \
-	-Wstrict-prototypes -Wold-style-declaration -Wold-style-definition \
-	-Wmissing-parameter-type -Wmissing-field-initializers -Wnested-externs \
-	-Wstack-usage=4096 -Wmissing-prototypes -Wfloat-equal -Wabsolute-value
-
-CFLAGS += -fsanitize=undefined -fsanitize-undefined-trap-on-error
-
-CC += -m32 -no-pie -fno-pie
-
+CFLAGS = -m32 -Iinclude
+LDFLAGS = -no-pie -fno-pie
 LDLIBS = -lm
 
-.PHONY: all
+BUILDDIR = build
+BINDIR = $(BUILDDIR)/bin
+OBJDIR = $(BUILDDIR)/obj
 
-all: integral
+TARGET = $(BINDIR)/integral
 
-integral: integral.c
-	$(CC) $(CFLAGS) -o $@ $< $(LDLIBS)
+TEST_ROOT = $(BINDIR)/test_root
+TEST_INTEGRAL = $(BINDIR)/test_integral
+
+CSRCS = \
+	main.c \
+	src/root.c \
+	src/integral.c \
+	src/options.c
+
+COBJS = $(patsubst %.c,$(OBJDIR)/%.o,$(CSRCS))
+
+OBJS = $(COBJS) $(OBJDIR)/funcs.o
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	mkdir -p $(BINDIR)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+
+$(OBJDIR)/%.o: %.c %.h
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR)/funcs.o: funcs.asm
+	mkdir -p $(dir $@)
+	$(ASM) -f elf32 $< -o $@
+
+test: $(TEST_ROOT) $(TEST_INTEGRAL)
+	./$(TEST_ROOT)
+	./$(TEST_INTEGRAL)
+
+$(TEST_ROOT): tests/test_root.c src/root.c
+	mkdir -p $(BINDIR)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+
+$(TEST_INTEGRAL): tests/test_integral.c src/integral.c
+	mkdir -p $(BINDIR)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+
+clean:
+	rm -rf $(BUILDDIR)
+
+.PHONY: all clean test
