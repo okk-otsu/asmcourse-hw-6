@@ -1,18 +1,31 @@
-#include <assert.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "funcs.h"
 
 #define EPS 1e-6
 
-static void check(double actual, double expected)
+static void check(const char *name, double actual, double expected)
 {
-    assert(fabs(actual - expected) < EPS);
+    double error = fabs(actual - expected);
+
+    if (error >= EPS) {
+        printf("FAILED: %s\n", name);
+        printf("actual   = %.10f\n", actual);
+        printf("expected = %.10f\n", expected);
+        printf("error    = %.10e\n", error);
+        exit(1);
+    }
+
+    printf("PASSED: %s\n", name);
 }
 
 static double line(double x) { return x; }
 static double minus_line(double x) { return -x; }
 static double square(double x) { return x * x; }
+static double cube(double x) { return x * x * x; }
+static double my_sin(double x) { return sin(x); }
 
 static double const_0(double x)
 {
@@ -32,25 +45,45 @@ static double const_4(double x)
     return 4.0;
 }
 
+static double const_5(double x)
+{
+    (void)x;
+    return 5.0;
+}
+
 int main(void)
 {
-    /* обычный случай */
-    check(root(line, const_4, 3.0, 5.0, 1e-7), 4.0);
+    check("line = 4",
+          root(line, const_4, 3.0, 5.0, 1e-7),
+          4.0);
 
-    /* иррациональный корень */
-    check(root(square, const_2, 1.0, 2.0, 1e-7), sqrt(2.0));
+    check("x^2 = 2",
+          root(square, const_2, 1.0, 2.0, 1e-7),
+          sqrt(2.0));
 
-    /* корень в нуле */
-    check(root(line, minus_line, -1.0, 1.0, 1e-7), 0.0);
+    check("x = -x",
+          root(line, minus_line, -1.0, 1.0, 1e-7),
+          0.0);
 
-    /* корень совпадает с левой границей */
-    check(root(line, const_0, 0.0, 10.0, 1e-7), 0.0);
+    check("left border root",
+          root(line, const_0, 0.0, 10.0, 1e-7),
+          0.0);
 
-    /* корень совпадает с правой границей */
-    check(root(line, const_4, 0.0, 4.0, 1e-7), 4.0);
+    check("right border root",
+          root(line, const_4, 0.0, 4.0, 1e-7),
+          4.0);
 
-    /* очень маленький отрезок */
-    check(root(line, const_4, 3.999999, 4.000001, 1e-12), 4.0);
+    check("small segment",
+          root(line, const_4, 3.999999, 4.000001, 1e-12),
+          4.0);
+
+    check("x^3 = 5",
+          root(cube, const_5, 1.0, 2.0, 1e-7),
+          cbrt(5.0));
+
+    check("sin(x) = 0",
+          root(my_sin, const_0, -1.0, 1.0, 1e-7),
+          0.0);
 
     return 0;
 }
