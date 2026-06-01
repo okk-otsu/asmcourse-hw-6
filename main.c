@@ -3,29 +3,39 @@
 #include "funcs.h"
 #include "options.h"
 
+/* Precision for root finding. */
 #define EPS1 1e-6
+
+/* Precision for numerical integration. */
 #define EPS2 1e-6
 
+/* Interval containing the intersection of f1 and f3. */
 #define X13_A 0.5
 #define X13_B 1.0
 
+/* Interval containing the intersection of f2 and f3. */
 #define X23_A 3.0
 #define X23_B 3.5
 
+/* Interval containing the intersection of f1 and f2. */
 #define X12_A 3.5
 #define X12_B 4.0
 
+/* Difference between f1 and f3. Used as the upper-minus-lower
+   function on the first part of the bounded figure. */
 static double f1_minus_f3(double x)
 {
-   return f1(x) - f3(x);
+    return f1(x) - f3(x);
 }
 
+/* Difference between f1 and f2. Used as the upper-minus-lower
+   function on the second part of the bounded figure. */
 static double f1_minus_f2(double x)
 {
-   return f1(x) - f2(x);
+    return f1(x) - f2(x);
 }
 
-
+/* Compute all intersection points and iteration counts */
 static void compute_roots(
     double *x13, double *x23, double *x12,
     int *i13, int *i23, int *i12)
@@ -39,11 +49,12 @@ static void compute_roots(
 
 int main(int argc, char **argv)
 {
+    /* Descriptions of supported command-line options. */
     static const struct option long_options[] = {
-        {"help",       no_argument, 0, 'h'},
-        {"root",       no_argument, 0, 'r'},
-        {"iterations", no_argument, 0, 'i'},
-        {"test-root", required_argument, 0, 'R'},
+        {"help",          no_argument,       0, 'h'},
+        {"root",          no_argument,       0, 'r'},
+        {"iterations",    no_argument,       0, 'i'},
+        {"test-root",     required_argument, 0, 'R'},
         {"test-integral", required_argument, 0, 'I'},
         {0, 0, 0, 0}
     };

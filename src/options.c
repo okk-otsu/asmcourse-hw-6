@@ -4,6 +4,7 @@
 #include "funcs.h"
 #include "options.h"
 
+/* Return a function pointer by its number. */
 static afunc *get_function(int number)
 {
     switch (number) {

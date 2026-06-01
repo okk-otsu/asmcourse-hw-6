@@ -4,6 +4,7 @@
 
 #include "funcs.h"
 
+/* Compute the integral approximation using the midpoint rectangle rule. */
 static double rectangle_sum(afunc *f, double a, double b, int n)
 {
     double width = (b - a) / n;
