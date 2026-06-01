@@ -1,18 +1,21 @@
 #include "funcs.h"
 
-double root(
+double root_iterations(
     afunc *f, 
     afunc *g,
     double a, 
     double b,
-    double eps
-)
+    double eps,
+    int *iterations)
 {
     double fa = f(a) - g(a);
+    int count = 0;
 
     while (b - a > eps) {
         double c = (a + b) / 2.0;
         double fc = f(c) - g(c);
+
+        ++count;
 
         if (fa * fc <= 0.0) {
             b = c;
@@ -22,5 +25,18 @@ double root(
         }
     }
 
+    *iterations = count;
+
     return (a + b) / 2.0;
+}
+
+double root(
+    afunc *f, 
+    afunc *g,
+    double a, 
+    double b,
+    double eps)
+{
+    int iterations;
+    return root_iterations(f, g, a, b, eps, &iterations);
 }

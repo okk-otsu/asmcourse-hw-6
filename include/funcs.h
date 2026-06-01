@@ -7,19 +7,25 @@ double f1(double x);
 double f2(double x);
 double f3(double x);
 
+double root_iterations(
+    afunc *f, 
+    afunc *g,
+    double a, 
+    double b,
+    double eps,
+    int *iterations);
+
 double root(
     afunc *f,
     afunc *g,
     double a,
     double b,
-    double eps
-);
+    double eps);
 
 double integral(
     afunc *f,
     double a,
     double b,
-    double eps
-);
+    double eps);
 
 #endif
