@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include "funcs.h"
+#include "options.h"
 
 #define EPS1 1e-6
 #define EPS2 1e-6
@@ -24,16 +25,6 @@ static double f1_minus_f2(double x)
    return f1(x) - f2(x);
 }
 
-static void print_help(const char *program)
-{
-    printf("Usage: %s [OPTION]\n", program);
-    printf("\n");
-    printf("Options:\n");
-    printf("  %-20s %s\n", "-h, --help", "print this help message");
-    printf("  %-20s %s\n", "-r, --root", "print intersection points");
-    printf("  %-20s %s\n", "-i, --iterations", "print iteration counts");
-
-}
 
 static void compute_roots(
     double *x13, double *x23, double *x12,
@@ -46,19 +37,14 @@ static void compute_roots(
 
 }
 
-static void compute_iterations(int *i13, int *i23, int *i12)
-{
-    root_iterations(f1, f3, X13_A, X13_B, EPS1, i13);
-    root_iterations(f2, f3, X23_A, X23_B, EPS1, i23);
-    root_iterations(f1, f2, X12_A, X12_B, EPS1, i12);
-}
-
 int main(int argc, char **argv)
 {
     static const struct option long_options[] = {
         {"help",       no_argument, 0, 'h'},
         {"root",       no_argument, 0, 'r'},
         {"iterations", no_argument, 0, 'i'},
+        {"test-root", required_argument, 0, 'R'},
+        {"test-integral", required_argument, 0, 'I'},
         {0, 0, 0, 0}
     };
 
@@ -66,7 +52,7 @@ int main(int argc, char **argv)
     int show_iterations = 0;
 
     int opt;
-    while ((opt = getopt_long(argc, argv, "hri", long_options, NULL)) != -1) {
+    while ((opt = getopt_long(argc, argv, "hriR:I:", long_options, NULL)) != -1) {
         switch (opt) {
         case 'h':
             print_help(argv[0]);
@@ -77,6 +63,10 @@ int main(int argc, char **argv)
         case 'i':
             show_iterations = 1;
             break;
+        case 'R':
+            return test_root_option(optarg);
+        case 'I':
+            return test_integral_option(optarg);
         default:
             print_help(argv[0]);
             return 1;
