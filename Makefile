@@ -30,7 +30,7 @@ $(TARGET): $(OBJS)
 	mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
-$(OBJDIR)/%.o: %.c %.h
+$(OBJDIR)/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
