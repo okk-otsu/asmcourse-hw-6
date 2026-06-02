@@ -2,7 +2,6 @@ CC = gcc
 ASM = nasm
 
 CFLAGS = -m32 -Iinclude
-LDFLAGS = -no-pie -fno-pie
 LDLIBS = -lm
 
 BUILDDIR = build
@@ -14,11 +13,7 @@ TARGET = $(BINDIR)/integral
 TEST_ROOT = $(BINDIR)/test_root
 TEST_INTEGRAL = $(BINDIR)/test_integral
 
-CSRCS = \
-	main.c \
-	src/root.c \
-	src/integral.c \
-	src/options.c
+CSRCS = main.c $(wildcard src/*.c)
 
 COBJS = $(patsubst %.c,$(OBJDIR)/%.o,$(CSRCS))
 
@@ -28,7 +23,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
 $(OBJDIR)/%.o: %.c
 	mkdir -p $(dir $@)
@@ -44,11 +39,11 @@ test: $(TEST_ROOT) $(TEST_INTEGRAL)
 
 $(TEST_ROOT): tests/test_root.c src/root.c
 	mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
 $(TEST_INTEGRAL): tests/test_integral.c src/integral.c
 	mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
 run: $(TARGET)
 	./$(TARGET) $(ARGS)
