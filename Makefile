@@ -50,7 +50,10 @@ $(TEST_INTEGRAL): tests/test_integral.c src/integral.c
 	mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
+run: $(TARGET)
+	./$(TARGET) $(ARGS)
+	
 clean:
 	rm -rf $(BUILDDIR)
 
-.PHONY: all clean test
+.PHONY: all run clean test 
