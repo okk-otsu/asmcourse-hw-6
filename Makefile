@@ -29,7 +29,7 @@ $(OBJDIR)/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJDIR)/funcs.o: funcs.asm
+$(OBJDIR)/funcs.o: src/funcs.asm
 	mkdir -p $(dir $@)
 	$(ASM) -f elf32 $< -o $@
 
