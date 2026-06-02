@@ -1,7 +1,8 @@
 CC = gcc
 ASM = nasm
 
-CFLAGS = -m32 -Iinclude
+CFLAGS = -m32 -Iinclude -Wall -Werror
+LDFLAGS = -no-pie
 LDLIBS = -lm
 
 BUILDDIR = build
@@ -23,7 +24,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(OBJDIR)/%.o: %.c
 	mkdir -p $(dir $@)
