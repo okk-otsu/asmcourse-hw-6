@@ -9,7 +9,7 @@ BUILDDIR = build
 BINDIR = $(BUILDDIR)/bin
 OBJDIR = $(BUILDDIR)/obj
 
-TARGET = $(BINDIR)/integral
+TARGET = integral
 
 TEST_ROOT = $(BINDIR)/test_root
 TEST_INTEGRAL = $(BINDIR)/test_integral
