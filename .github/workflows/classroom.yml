@@ -1,8 +1,6 @@
 name: Autograding Tests
 'on':
   workflow_dispatch:
-  schedule:
-  - cron: '30 7 * * *'
 permissions:
   checks: write
   actions: read
